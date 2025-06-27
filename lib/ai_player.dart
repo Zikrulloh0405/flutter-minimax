@@ -1,6 +1,20 @@
 import 'dart:math';
 
 class AIPlayer {
+  /// Predefined winning combinations to avoid recreating the list on
+  /// each call. Keeping this as a constant improves the performance of
+  /// the win checks performed during the minimax search.
+  static const List<List<int>> _winCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
   int findBestMove(List<String> board) {
     int bestMove = -1;
     int bestScore = 1000; // Initialize with a high score for minimizing player (AI)
@@ -25,7 +39,7 @@ class AIPlayer {
   }
 
   int minimax(List<String> board, int depth, bool isMaximizingPlayer, int alpha, int beta) {
-    List<String> winningCombination = findWinningCombination(board);
+    List<String> winningCombination = AIPlayer.findWinningCombination(board);
 
     if (winningCombination.isNotEmpty) {
       if (winningCombination[0] == 'O') {
@@ -70,20 +84,8 @@ class AIPlayer {
     }
   }
 
-  List<String> findWinningCombination(List<String> board) {
-    // Define winning combinations for Tic Tac Toe
-    List<List<int>> winCombinations = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-
-    for (var combination in winCombinations) {
+  static List<String> findWinningCombination(List<String> board) {
+    for (var combination in _winCombinations) {
       if (board[combination[0]] == board[combination[1]] &&
           board[combination[1]] == board[combination[2]] &&
           board[combination[0]] != '') {
